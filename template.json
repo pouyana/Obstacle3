@@ -1,6 +1,20 @@
 {
-  "lat": 23,
-  "lon": 23,
-  "z": 232,
-  "id": 43,
+  "accuracy": 1,
+  "classification": [
+    [3, 1],
+    [15, 0]
+  ],
+  "request": {
+    "flightarea": {
+      "lat": 49.783871,
+      "long": 9.976217,
+      "length": 300,
+      "width": 300
+    },
+    "drone": {
+      "mass": 1500,
+      "maxSpeed": 20,
+      "maxFlightHeight": 200
+    }
+  }
 }

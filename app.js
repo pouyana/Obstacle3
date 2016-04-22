@@ -10,23 +10,40 @@ app.set('json spaces', 2);
 var compression = require('compression');
 app.use(compression());
 var bodyParser = require('body-parser');
+var validate = require('jsonschema').validate;
+var generateMapSchema = require('./schemas/generate-map.js');
 
 var sampleLayer = require('./layers/sample.js');
 
 var api = express.Router();
 api.use(function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-cache');
   logger.debug('API Request: %s %s', req.method, req.originalUrl);
   return next();
 });
 api.use(bodyParser.json());
 
-api.get('/generate-map/:layerName', function(req, res, next) {
-  if (req.params.layerName == 'sample')
-    res.json(sampleLayer.generate(res.body));
-  else {
-    res.status(400).json('Layer Not found');
+api.post('/generate-map/:layerName', function(req, res, next) {
+  var params = req.body;
+  var validation = validate(params, generateMapSchema);
+  if (validation.errors.length != 0) {
+    logger.warn(validation);
+    return res.status(400).json({
+      ValidationErrors: validation.errors.reduce(function(previousValue, currentValue, currentIndex, array) {
+        return currentValue.property.substr(9) + ' (' +  currentValue.instance + ') ' + currentValue.message;
+      })
+    });
+  }
+
+  if (req.params.layerName == 'sample') {
+    res.json({
+      accuracy: 1,
+      classification: sampleLayer.generate(params),
+      request: params
+    });
+  } else {
+    res.status(400).json('Layer Type Not found');
   }
 })
 
