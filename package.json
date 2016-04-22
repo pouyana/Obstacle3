@@ -1,0 +1,18 @@
+{
+  "name": "Obstacle3",
+  "version": "0.0.1",
+  "description": "Obstacle3 API",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "compression": "^1.6.1",
+    "express": "^4.13.4",
+    "log4js": "^0.6.35"
+  },
+  "devDependencies": {
+    "forever": "*"
+  },
+  "scripts": {
+    "start": "node app"
+  }
+}
