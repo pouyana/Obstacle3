@@ -37,6 +37,7 @@ db.on('disconnected', function() {
 
 var randomLayer = require('./layers/random.js');
 var groundLayer = require('./layers/ground.js');
+var elevationLayer = require('./layers/elevation.js');
 
 var api = express.Router();
 api.use(function(req, res, next) {
@@ -74,11 +75,15 @@ api.post('/generate-map/:layerName', function(req, res, next) {
       accuracy: params.accuracy || 1,
       classification: groundLayer.generate(params)
     });
+  } else if (req.params.layerName == 'elevation') {
+    res.json({
+      accuracy: 1,
+      classification: elevationLayer.generate(params)
+    });
   } else {
     res.status(400).json('Layer Type Not found');
   }
 })
-
 api.use(function(req, res) {
   logger.warn('%s %s not found', req.method, req.originalUrl);
   res.status(404).json('Not found');

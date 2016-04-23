@@ -1,5 +1,6 @@
 var log4js = require('log4js');
 var logger = log4js.getLogger('elevationLayer');
+var pointGenerator = require('../helpers/point-generator.js').pointGenerator;
 
 exports.generate = function(data) {
   logger.debug(data);

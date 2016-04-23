@@ -18,7 +18,7 @@ exports.pointGenerator = function(lat, lon, accuracy, width) {
     [-1, -1],
     [-1, 1]
   ];
-  combinations.forEach(fucntion(element) {
+  combinations.forEach(function(element) {
     element[0] = element[0] * steps;
     element[1] = element[1] * steps;
   });
