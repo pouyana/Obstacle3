@@ -14,6 +14,7 @@ var validate = require('jsonschema').validate;
 var generateMapSchema = require('./schemas/generate-map.js');
 
 var randomLayer = require('./layers/random.js');
+var groundLayer = require('./layers/ground.js');
 
 var api = express.Router();
 api.use(function(req, res, next) {
@@ -22,7 +23,11 @@ api.use(function(req, res, next) {
   logger.debug('API Request: %s %s', req.method, req.originalUrl);
   return next();
 });
+
 api.use(bodyParser.json());
+api.use(function(err, req, res, next) {
+  res.status(400).json('Invalid JSON');
+})
 
 api.post('/generate-map/:layerName', function(req, res, next) {
   var params = req.body;
@@ -41,6 +46,11 @@ api.post('/generate-map/:layerName', function(req, res, next) {
       accuracy: params.accuracy || 1,
       classification: randomLayer.generate(params),
       request: params
+    });
+  } else if (req.params.layerName == 'ground') {
+    res.json({
+      accuracy: params.accuracy || 1,
+      classification: groundLayer.generate(params)
     });
   } else {
     res.status(400).json('Layer Type Not found');

@@ -4,7 +4,9 @@ Obstacle3 is an App showing different Maps
 
 It was build at the [NASA Spaceapps Challenge](https://2016.spaceappschallenge.org/locations/wuerzburg-germany) 2016.
 
-## [Repo of the Android App](https://2016.spaceappschallenge.org/locations/wuerzburg-germany)
+## [Repo of the Android App](https://github.com/olheimer/ObstacleApp)
+
+The returned Maps are visualized with an App
 
 ## Useing the API
 ### Generate a Map
@@ -31,13 +33,14 @@ It was build at the [NASA Spaceapps Challenge](https://2016.spaceappschallenge.o
 
 #### Errors
 
-- 400 `{"ValidationErrors": ["errors"]}`, [more info](schemas/generate-map.js)-
+- 400 `"Invalid JSON"`
+- 400 `{"ValidationErrors": ["errors"]}`, [more info](schemas/generate-map.js)
 - 400 `"Layer Type Not found"`
 - 500 `"Internal Server Error"` :(
 
 #### Example
 
-`POST` /api/generate-map/[sample](layers/random.js)
+`POST` /api/generate-map/[random](layers/random.js)
 ```json
 {
   "flightarea": {
@@ -46,7 +49,7 @@ It was build at the [NASA Spaceapps Challenge](https://2016.spaceappschallenge.o
     "length": 300,
     "width": 300
   },
-  "accuracy": 20,
+  "accuracy": 20
 }
 ```
 
