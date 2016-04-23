@@ -39,6 +39,8 @@ var randomLayer = require('./layers/random.js');
 var groundLayer = require('./layers/ground.js');
 var elevationLayer = require('./layers/elevation.js');
 
+var landingPosition = require('./landing/position.js');
+
 var api = express.Router();
 api.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -52,6 +54,11 @@ api.use(function(err, req, res, next) {
   res.status(400).json('Invalid JSON');
 })
 
+/*api.post('/landing/position/add', landingPosition.addPosition);
+api.post('/landing/position/update', landingPosition.updatePosition);
+api.post('/landing/position/remove', landingPosition.removePosition);
+api.post('/landing/position/near', landingPosition.nearestPosition);
+*/
 api.post('/generate-map/:layerName', function(req, res, next) {
   var params = req.body;
   var validation = validate(params, generateMapSchema);
@@ -59,27 +66,33 @@ api.post('/generate-map/:layerName', function(req, res, next) {
     logger.warn(validation);
     return res.status(400).json({
       ValidationErrors: validation.errors.reduce(function(previousValue, currentValue, currentIndex, array) {
-        return currentValue.property.substr(9) + ' (' +  currentValue.instance + ') ' + currentValue.message;
+        return currentValue.property.substr(9) + ' (' + currentValue.instance + ') ' + currentValue.message;
       })
     });
   }
 
   if (req.params.layerName == 'random') {
-    res.json({
-      accuracy: params.accuracy || 1,
-      classification: randomLayer.generate(params),
-      request: params
-    });
+    randomLayer.generate(params).then(function(data) {
+      res.json({
+        accuracy: params.accuracy || 1,
+        classification: data,
+        request: params
+      });
+    })
   } else if (req.params.layerName == 'ground') {
-    res.json({
-      accuracy: params.accuracy || 1,
-      classification: groundLayer.generate(params)
-    });
+    randomLayer.generate(params).then(function(data) {
+      res.json({
+        accuracy: params.accuracy || 1,
+        classification: data
+      });
+    })
   } else if (req.params.layerName == 'elevation') {
-    res.json({
-      accuracy: 1,
-      classification: elevationLayer.generate(params)
-    });
+    elevationLayer.generate(params).then(function(data) {
+      res.json({
+        accuracy: 1,
+        classification: data
+      });
+    })
   } else {
     res.status(400).json('Layer Type Not found');
   }

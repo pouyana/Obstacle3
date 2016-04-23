@@ -1,10 +1,7 @@
 var config = {
   log4js: {
     appenders: [{
-      type: 'console',
-      layout: {
-        type: "basic"
-      }
+      type: 'console'
     }]
   },
   http: {
