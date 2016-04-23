@@ -7,13 +7,13 @@ module.exports = {
         lat: {
           type: 'float',
           minimum: -90,
-          maximun: 90,
+          maximum: 90,
           description: 'Latitude of the upper left corner of the Flightarea'
         },
         long: {
           type: 'float',
           minimum: -180,
-          maximun: 180,
+          maximum: 180,
           description: 'Longitude of the upper left corner of the Flightarea'
         },
         length: {
@@ -33,7 +33,7 @@ module.exports = {
         mass: {
           type: 'integer',
           minimum: 0,
-          description: 'Mass in kg'
+          description: 'Mass in g'
         },
         maxSpeed: {
           type: 'integer',
@@ -45,9 +45,13 @@ module.exports = {
           minimum: 0,
           description: 'Maximum Flight Height over Ground in m'
         }
-      },
-      required: ['mass', 'maxSpeed', 'maxFlightHeight']
+      }
+    },
+    accuracy: {
+      type: 'integer',
+      minimum: 1,
+      description: 'How detailed the map should be in m'
     }
   },
-  required: ['flightarea', 'drone']
+  required: ['flightarea']
 }

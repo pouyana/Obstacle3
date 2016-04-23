@@ -15,6 +15,7 @@
       "mass": 1500,
       "maxSpeed": 20,
       "maxFlightHeight": 200
-    }
-  }
+    },
+    "accuracy": 1
+  },
 }

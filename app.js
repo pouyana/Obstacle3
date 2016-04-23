@@ -6,14 +6,14 @@ var logger = log4js.getLogger();
 var express = require('express');
 var app = express();
 app.disable('x-powered-by');
-app.set('json spaces', 2);
+//app.set('json spaces', 2);
 var compression = require('compression');
 app.use(compression());
 var bodyParser = require('body-parser');
 var validate = require('jsonschema').validate;
 var generateMapSchema = require('./schemas/generate-map.js');
 
-var sampleLayer = require('./layers/sample.js');
+var randomLayer = require('./layers/random.js');
 
 var api = express.Router();
 api.use(function(req, res, next) {
@@ -36,10 +36,10 @@ api.post('/generate-map/:layerName', function(req, res, next) {
     });
   }
 
-  if (req.params.layerName == 'sample') {
+  if (req.params.layerName == 'random') {
     res.json({
-      accuracy: 1,
-      classification: sampleLayer.generate(params),
+      accuracy: params.accuracy || 1,
+      classification: randomLayer.generate(params),
       request: params
     });
   } else {
