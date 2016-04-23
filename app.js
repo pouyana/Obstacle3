@@ -54,10 +54,10 @@ api.use(function(err, req, res, next) {
   res.status(400).json('Invalid JSON');
 })
 
-api.post('/landing/position/add', landingPosition.addPosition);
-api.post('/landing/position/update', landingPosition.updatePosition);
-api.post('/landing/position/remove', landingPosition.removePosition);
-api.post('/landing/position/near', landingPosition.nearestPosition);
+//api.post('/landing/position/add', landingPosition.addPosition);
+//api.post('/landing/position/update', landingPosition.updatePosition);
+//api.post('/landing/position/remove', landingPosition.removePosition);
+//api.post('/landing/position/near', landingPosition.nearestPosition);
 
 api.post('/generate-map/:layerName', function(req, res, next) {
   var params = req.body;

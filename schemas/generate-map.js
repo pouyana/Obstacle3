@@ -25,7 +25,7 @@ module.exports = {
           description: 'Width of the Flightarea'
         }
       },
-      required: ['lat', 'long', 'length', 'width']
+      required: ['lat', 'lon', 'length', 'width']
     },
     drone: {
       type: 'object',

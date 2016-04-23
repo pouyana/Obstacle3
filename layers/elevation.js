@@ -5,7 +5,6 @@ var pointGenerator = require('../helpers/point-generator.js').pointGenerator;
 
 exports.generate = function(data) {
   return new Promise(function(resolve) {
-    logger.debug(data);
     var map = pointGenerator(data.flightarea.lat, data.flightarea.lon, data.accuracy, data.flightarea.width, data.flightarea["length"]);
 
     var promises = []
@@ -17,14 +16,19 @@ exports.generate = function(data) {
 
     var c = 0
     Promise.all(promises).then(function(data) {
-      for (var i = 0; i < map.length; i++) {
-        for (var j = 0; j < map[i].length; j++) {
-          map[i][j].push(data[c]);
-          c++
-        }
-      }
-      logger.debug(map);
-      resolve(map);
+      elevations = [];
+      data.forEach(function(element) {
+        elevations.push(element[2]);
+      });
+      var sortedData = elevations.sort(function(a, b) {
+        return a - b;
+      });
+      minElevation = elevations[0];
+      maxElevation = elevations[elevations.length - 1];
+      data.forEach(function(element) {
+        element[2] = normalizer(minElevation, maxElevation, element[2]);
+      });
+      resolve(data);
     });
   });
 }
@@ -36,8 +40,11 @@ var elevationGet = function(lat, lon) {
     request(requestSent, function(error, response, body) {
       if (!error && response.statusCode == 200) {
         try {
-          data = JSON.parse(body);
-          data = data["USGS_Elevation_Point_Query_Service"]["Elevation_Query"]["Elevation"];
+          data = [];
+          data[0] = lat;
+          data[1] = lon;
+          data[2] = JSON.parse(body);
+          data[2] = data[2]["USGS_Elevation_Point_Query_Service"]["Elevation_Query"]["Elevation"];
         } catch (e) {
           logger.error(e);
         }
@@ -47,4 +54,10 @@ var elevationGet = function(lat, lon) {
       resolve(data);
     });
   });
+}
+
+var normalizer = function(minValue, maxValue, value) {
+  var normalized = ((value - minValue) / (maxValue - minValue));
+  normalized = Math.abs(normalized - 1);
+  return Math.floor(normalized * 16);
 }
