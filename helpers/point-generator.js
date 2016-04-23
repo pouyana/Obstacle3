@@ -6,10 +6,12 @@ var logger = log4js.getLogger('pointGenerator');
  * @param lon Longitutde of the drone
  * @param accuracy The accuracy needed.
  * @param width Width of the area we need data from
+ * @param height Height of the area we need data from.
  */
-exports.pointGenerator = function(lat, lon, accuracy, width) {
+exports.pointGenerator = function(lat, lon, accuracy, width, height) {
   var edges = [];
-  var stepSize = width / accuracy;
+  var stepSizeLon = width / accuracy;
+  var stepSizeLat = height / accuracy;
   var combinations = [
     [1, 1],
     [1, -1],
@@ -25,18 +27,18 @@ exports.pointGenerator = function(lat, lon, accuracy, width) {
   combinations.forEach(function(element) {
     var counterLat = 0;
     while (Math.abs(counterLat) < Math.abs(element[0])) {
-      counterLat = counterLat + getSign(element[0]) * stepSize;
+      counterLat = counterLat + getSign(element[0]) * stepSizeLat;
       counterLon = 0;
       tmpLine = [];
       while (Math.abs(counterLon) < Math.abs(element[1])) {
-        counterLon = counterLon + getSign(element[1]) * stepSize;
+        counterLon = counterLon + getSign(element[1]) * stepSizeLon;
         tmpEdges = generateEdges(lat, lon, counterLat, counterLon);
         tmpLine.push(tmpEdges);
       }
       edges.push(tmpLine);
     }
   });
-  logger.debug(edges);
+  return edges;
 }
 
 var getSign = function(number) {
