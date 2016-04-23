@@ -7,7 +7,7 @@
   "request": {
     "flightarea": {
       "lat": 49.783871,
-      "long": 9.976217,
+      "lon": 9.976217,
       "length": 300,
       "width": 300
     },

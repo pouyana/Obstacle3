@@ -10,7 +10,7 @@ module.exports = {
           maximum: 90,
           description: 'Latitude of the upper left corner of the Flightarea'
         },
-        long: {
+        lon: {
           type: 'float',
           minimum: -180,
           maximum: 180,

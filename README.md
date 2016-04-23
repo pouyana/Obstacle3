@@ -17,9 +17,9 @@ The returned Maps are visualized with an App
 
 - **flightarea** *(required)* — Dimensions of the Flightarea:
   - **lat** *(required)* — Latitude of the upper left corner of the Flightarea
-  - **long** *(required)* — Longitude of the upper left corner of the Flightarea
+  - **lon** *(required)* — Longitude of the upper left corner of the Flightarea
   - **length** *(required)* — Length of the Flightarea (in m)
-  - **long** *(required)* — 'Width of the Flightarea (in m)
+  - **width** *(required)* — Width of the Flightarea (in m)
 - **drone** — Information about the drone:
   - **mass** — Mass of the drone (in g)
   - **maxSpeed** — Maximum Speed (in m/s)
@@ -45,7 +45,7 @@ The returned Maps are visualized with an App
 {
   "flightarea": {
     "lat": 49.783871,
-    "long": 9.976217,
+    "lon": 9.976217,
     "length": 300,
     "width": 300
   },

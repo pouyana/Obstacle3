@@ -6,7 +6,7 @@ var pointGenerator = require('../helpers/point-generator.js').pointGenerator;
 exports.generate = function(data) {
   return new Promise(function(resolve) {
     logger.debug(data);
-    var map = pointGenerator(data.flightarea.lat, data.flightarea.long, data.accuracy, data.flightarea.width, data.flightarea["length"]);
+    var map = pointGenerator(data.flightarea.lat, data.flightarea.lon, data.accuracy, data.flightarea.width, data.flightarea["length"]);
 
     var promises = []
     map.forEach(function(element) {
