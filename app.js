@@ -13,6 +13,28 @@ var bodyParser = require('body-parser');
 var validate = require('jsonschema').validate;
 var generateMapSchema = require('./schemas/generate-map.js');
 
+var mongoose = require('mongoose');
+mongoose.connect(config.mongodb.url, config.mongodb.config, function(err) {
+  if (err) logger.error(err.stack);
+});
+mongoose.set('debug', true);
+var db = mongoose.connection;
+db.once('open', function() {
+  logger.debug('Opened mongoose');
+});
+db.once('close', function() {
+  logger.debug('Closed mongoose');
+});
+db.on('connected', function() {
+  logger.debug('Connected to MongoDB');
+});
+db.on('error', function(err) {
+  logger.error(err.stack);
+});
+db.on('disconnected', function() {
+  logger.debug('Disconnected to MongoDB');
+});
+
 var randomLayer = require('./layers/random.js');
 var groundLayer = require('./layers/ground.js');
 

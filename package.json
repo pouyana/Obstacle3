@@ -8,7 +8,8 @@
     "compression": "^1.6.1",
     "express": "^4.13.4",
     "log4js": "^0.6.35",
-    "jsonschema": "^1.1.0"
+    "jsonschema": "^1.1.0",
+    "mongoose": "^4.4.12"
   },
   "devDependencies": {
     "forever": "*"
