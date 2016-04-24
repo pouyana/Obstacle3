@@ -4,6 +4,7 @@ var log4js = require('log4js');
 log4js.configure(config.log4js);
 var logger = log4js.getLogger();
 var express = require('express');
+var debug = require("debug");
 var app = express();
 app.disable('x-powered-by');
 //app.set('json spaces', 2);
@@ -38,6 +39,8 @@ db.on('disconnected', function() {
 var randomLayer = require('./layers/random.js');
 var groundLayer = require('./layers/ground.js');
 var elevationLayer = require('./layers/elevation.js');
+var mapTypes = require("./maptypes/maptypes.js");
+
 
 var landingPosition = require('./landing/position.js');
 
@@ -59,6 +62,21 @@ api.use(function(err, req, res, next) {
 //api.post('/landing/position/remove', landingPosition.removePosition);
 //api.post('/landing/position/near', landingPosition.nearestPosition);
 
+/**
+ * Returns the Map Existing mapTypes, still static.
+ */
+api.post(["/get-maptypes", "/get-maptypes/"], function(req, res, next) {
+  var params = req.body;
+  mapTypes.generate(params).then(function(data) {
+    res.json({
+      maptypes: data
+    });
+  });
+});
+
+/**
+ * Generates the Maps.
+ */
 api.post('/generate-map/:layerName', function(req, res, next) {
   var params = req.body;
   var validation = validate(params, generateMapSchema);
@@ -73,9 +91,12 @@ api.post('/generate-map/:layerName', function(req, res, next) {
 
   if (req.params.layerName == 'random') {
     randomLayer.generate(params).then(function(data) {
+      console.log(data);
       res.json({
         accuracy: params.accuracy || 1,
-        classification: data,
+        classification: data.classification,
+        lat: data.lat,
+        lon: data.lon,
         request: params
       });
     })
@@ -87,10 +108,14 @@ api.post('/generate-map/:layerName', function(req, res, next) {
       });
     })
   } else if (req.params.layerName == 'elevation') {
+    console.log(params);
     elevationLayer.generate(params).then(function(data) {
       res.json({
-        accuracy: 1,
-        classification: data
+        accuracy: params.accuracy,
+        classification: data.classification,
+        lat: params.flightarea.lat,
+        lon: params.flightarea.lon,
+        request: params,
       });
     })
   } else {
