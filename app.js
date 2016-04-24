@@ -11,8 +11,6 @@ app.disable('x-powered-by');
 var compression = require('compression');
 app.use(compression());
 var bodyParser = require('body-parser');
-var validate = require('jsonschema').validate;
-var generateMapSchema = require('./schemas/generate-map.js');
 
 var mongoose = require('mongoose');
 mongoose.connect(config.mongodb.url, config.mongodb.config, function(err) {
@@ -36,10 +34,8 @@ db.on('disconnected', function() {
   logger.debug('Disconnected to MongoDB');
 });
 
-var randomLayer = require('./layers/random.js');
-var elevationLayer = require('./layers/elevation.js');
-var mapTypes = require("./maptypes/maptypes.js");
-
+var generateMapRouter = require("./maps/generate-map.js");
+var mapTypes = require("./maps/maptypes.js");
 
 var api = express.Router();
 api.use(function(req, res, next) {
@@ -65,47 +61,8 @@ api.post("/get-maptypes", function(req, res, next) {
   });
 });
 
-/**
- * Generates the Maps.
- */
-api.post('/generate-map/:layerName', function(req, res, next) {
-  var params = req.body;
-  var validation = validate(params, generateMapSchema);
-  if (validation.errors.length != 0) {
-    logger.warn(validation);
-    return res.status(400).json({
-      ValidationErrors: validation.errors.reduce(function(previousValue, currentValue, currentIndex, array) {
-        return currentValue.property.substr(9) + ' (' + currentValue.instance + ') ' + currentValue.message;
-      })
-    });
-  }
+api.use('/generate-map', generateMapRouter);
 
-  if (req.params.layerName == 'random') {
-    randomLayer.generate(params).then(function(data) {
-      console.log(data);
-      res.json({
-        accuracy: params.accuracy || 1,
-        classification: data.classification,
-        lat: data.lat,
-        lon: data.lon,
-        request: params
-      });
-    })
-  } else if (req.params.layerName == 'elevation') {
-    console.log(params);
-    elevationLayer.generate(params).then(function(data) {
-      res.json({
-        accuracy: params.accuracy,
-        classification: data.classification,
-        lat: params.flightarea.lat,
-        lon: params.flightarea.lon,
-        request: params,
-      });
-    })
-  } else {
-    res.status(400).json('Layer Type Not found');
-  }
-})
 api.use(function(req, res) {
   logger.warn('%s %s not found', req.method, req.originalUrl);
   res.status(404).json('Not found');
