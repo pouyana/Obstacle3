@@ -37,12 +37,9 @@ db.on('disconnected', function() {
 });
 
 var randomLayer = require('./layers/random.js');
-var groundLayer = require('./layers/ground.js');
 var elevationLayer = require('./layers/elevation.js');
 var mapTypes = require("./maptypes/maptypes.js");
 
-
-var landingPosition = require('./landing/position.js');
 
 var api = express.Router();
 api.use(function(req, res, next) {
@@ -57,17 +54,11 @@ api.use(function(err, req, res, next) {
   res.status(400).json('Invalid JSON');
 })
 
-//api.post('/landing/position/add', landingPosition.addPosition);
-//api.post('/landing/position/update', landingPosition.updatePosition);
-//api.post('/landing/position/remove', landingPosition.removePosition);
-//api.post('/landing/position/near', landingPosition.nearestPosition);
-
 /**
  * Returns the Map Existing mapTypes, still static.
  */
-api.post(["/get-maptypes", "/get-maptypes/"], function(req, res, next) {
-  var params = req.body;
-  mapTypes.generate(params).then(function(data) {
+api.post("/get-maptypes", function(req, res, next) {
+  mapTypes.all().then(function(data) {
     res.json({
       maptypes: data
     });
@@ -98,13 +89,6 @@ api.post('/generate-map/:layerName', function(req, res, next) {
         lat: data.lat,
         lon: data.lon,
         request: params
-      });
-    })
-  } else if (req.params.layerName == 'ground') {
-    randomLayer.generate(params).then(function(data) {
-      res.json({
-        accuracy: params.accuracy || 1,
-        classification: data
       });
     })
   } else if (req.params.layerName == 'elevation') {
