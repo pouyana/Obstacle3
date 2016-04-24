@@ -1,12 +1,29 @@
 # Obstacle3
 
-Obstacle3 is an App showing different Maps
+Obstacle3 is an App showing different Maps, where a drone can't fly and where it could fly easily.
 
-It was build at the [NASA Spaceapps Challenge](https://2016.spaceappschallenge.org/locations/wuerzburg-germany) 2016.
+At the moment there are only the Maps
+- random — for testing
+- elevation — returning the Elevation based on the API from [nationalmap.gov](http://nationalmap.gov/epqs/)
 
+It was build at the [NASA Spaceapps Challenge](https://2016.spaceappschallenge.org/locations/wuerzburg-germany) 2016 in the Category Don't Crash My Drone.
 ## [Repo of the Android App](https://github.com/olheimer/ObstacleApp)
 
-The returned Maps are visualized with an App
+The returned Maps are visualized with an App.
+Colors symbolize the fly conditions for Drones.
+
+Take a look at the Repo for Screenshots
+
+## Future Work
+More maps
+- No Fly Zones
+- Avation Weather Information [possible API](http://www.aviationweather.gov/dataserver/example?datatype=metar)
+- Signal Strength
+- Water [possible API](http://waterservices.usgs.gov/rest/IV-Test-Tool.html)
+- Power Lines [possible API](https://eia-ms.esri.com/arcgis/rest/services/20151208StateEnergyProfilesMap/MapServer/33)
+- Antennas [possible API](http://wireless2.fcc.gov/UlsApp/AsrSearch/asrRegistrationSearch.jsp)
+
+Implementing the REST API directly into the drone
 
 ## Useing the API
 ### Generate a Map
@@ -74,5 +91,39 @@ Response:
     [3,3,15,12,8,3,15,8,15,1,10,13,3,14,13],
     [15,3,1,10,3,3,10,15,12,0,7,10,12,12,3]
   ]
+}
+```
+
+### Get all types of Maps
+
+`POST` /api/get-maptypes
+
+#### Return format
+
+- **maptypes** (array)
+  - **name** — Name of the Map, shown to the User
+  - **maptype** — layerName for `/api/generate-map`
+
+#### Errors
+
+- 500 `"Internal Server Error"` :(
+
+#### Example
+
+`POST` /api/get-maptypes
+
+Response:
+```json
+{
+  "maptypes": [{
+    "name": "Random Map",
+    "maptype": "random"
+  }, {
+    "name": "Elevation Map",
+    "maptype": "elevation"
+  }, {
+    "name": "Wind Map",
+    "maptype": "wind"
+  }]
 }
 ```
